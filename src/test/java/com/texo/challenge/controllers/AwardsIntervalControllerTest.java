@@ -91,4 +91,23 @@ class AwardsIntervalControllerTest {
         String expected = "{\"min\":[{\"producer\":\"Joel Silver\",\"interval\":1,\"previousWin\":1990,\"followingWin\":1991}],\"max\":[{\"producer\":\"Matthew Vaughn\",\"interval\":13,\"previousWin\":2002,\"followingWin\":2015}]}";
         assertEquals(expected, result.getResponse().getContentAsString());
     }
+
+    @Test
+    void testTest1from21stJuneSuccess() throws Exception {
+        String filePath = new File(RESOURCE_PATH + "test1from21stJune.csv").getAbsolutePath();
+        Set<MovieDto> items = ReadFileService.readMovies(filePath);
+
+        List<Producer> producers = producerService.storeProducersFromMovies(items);
+        movieService.storeMoviesWithProducers(producers, items);
+
+        MvcResult result =
+                mockMvc.perform(MockMvcRequestBuilders.get("/api/list-awards-interval"))
+                        .andDo(print())
+                        .andExpect(status().isOk())
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                        .andReturn();
+
+        String expected = "{\"min\":[{\"producer\":\"Joel Silver\",\"interval\":1,\"previousWin\":1990,\"followingWin\":1991},{\"producer\":\"Matthew Vaughn\",\"interval\":1,\"previousWin\":2002,\"followingWin\":2003}],\"max\":[{\"producer\":\"Matthew Vaughn\",\"interval\":22,\"previousWin\":1980,\"followingWin\":2002},{\"producer\":\"Matthew Vaughn\",\"interval\":22,\"previousWin\":2015,\"followingWin\":2037}]}";
+        assertEquals(expected, result.getResponse().getContentAsString());
+    }
 }

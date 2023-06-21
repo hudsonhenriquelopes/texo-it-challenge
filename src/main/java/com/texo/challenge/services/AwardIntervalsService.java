@@ -12,11 +12,11 @@ public class AwardIntervalsService {
 
     private static final String GROUP_AWARD_INTERVALS_OF_PRODUCER =
             """
-                SELECT new com.texo.challenge.models.AwardIntervalDto(producer, previousWin, followingWin, (followingWin - previousWin)) 
+                SELECT new com.texo.challenge.models.AwardIntervalDto(producer, previousWin, followingWin, (followingWin - previousWin))
                 FROM (
                     SELECT p.name AS producer, m.awardYear AS previousWin,
                      (
-                         SELECT MAX(mf.awardYear) 
+                         SELECT MIN(mf.awardYear) 
                          FROM Movie mf 
                          JOIN MovieProducer mmp ON mmp.id.movie = mf.id 
                          WHERE mmp.id.producer = p.id 
